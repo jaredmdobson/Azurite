@@ -1,7 +1,8 @@
 package util;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Juyas
@@ -10,24 +11,24 @@ import org.junit.Test;
  */
 public class PairTest {
 
-    @Test
-    public void getterSetter() {
-        Pair<String, String> pair = new Pair<>("l", "r");
-        Assert.assertEquals("l", pair.getLeft());
-        Assert.assertEquals("r", pair.getRight());
-        pair.setLeft("1");
-        pair.setRight("2");
-        Assert.assertEquals("1", pair.getLeft());
-        Assert.assertEquals("2", pair.getRight());
-    }
+  @Test
+  public void getterSetter() {
+    Pair<String, String> pair = new Pair<>("l", "r");
+    Assertions.assertEquals("l", pair.getLeft());
+    Assertions.assertEquals("r", pair.getRight());
+    pair.setLeft("1");
+    pair.setRight("2");
+    Assertions.assertEquals("1", pair.getLeft());
+    Assertions.assertEquals("2", pair.getRight());
+  }
 
-    @Test
-    public void extend() {
-        Pair<String, String> pair = new Pair<>("l", "r");
-        Triple<String, String, String> rr = pair.extend("rr");
-        Assert.assertEquals("l", rr.getLeft());
-        Assert.assertEquals("r", rr.getMiddle());
-        Assert.assertEquals("rr", rr.getRight());
-    }
+  @Test
+  public void extend() {
+    Pair<String, String> pair = new Pair<>("l", "r");
+    Triple<String, String, String> rr = pair.extend("rr");
+    Assertions.assertEquals("l", rr.getLeft());
+    Assertions.assertEquals("r", rr.getMiddle());
+    Assertions.assertEquals("rr", rr.getRight());
+  }
 
 }

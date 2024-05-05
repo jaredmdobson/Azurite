@@ -1,8 +1,9 @@
 package util;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -13,38 +14,38 @@ import java.util.List;
  */
 public class OrderPreservingListTest {
 
-    int[] data;
+  int[] data;
 
-    @Before
-    public void setUp() {
-        data = new int[20];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = i;
-        }
-        //swap randomly
-        for (int i = 0; i < 1000; i++) {
-            int d = data[i % data.length];
-            int o = (int) (Math.random() * 20);
-            data[i % data.length] = data[o];
-            data[o] = d;
-        }
+  @BeforeEach
+  public void setUp() {
+    data = new int[20];
+    for (int i = 0; i < data.length; i++) {
+      data[i] = i;
     }
+    //swap randomly
+    for (int i = 0; i < 1000; i++) {
+      int d = data[i % data.length];
+      int o = (int) (Math.random() * 20);
+      data[i % data.length] = data[o];
+      data[o] = d;
+    }
+  }
 
-    @Test
-    public void testList() {
-        OrderPreservingList<Integer> list = new OrderPreservingList<>();
-        for (int value : data) {
-            list.add(value);
-            Assert.assertTrue(isSorted(list));
-        }
+  @Test
+  public void testList() {
+    OrderPreservingList<Integer> list = new OrderPreservingList<>();
+    for (int value : data) {
+      list.add(value);
+      Assertions.assertTrue(isSorted(list));
     }
+  }
 
-    private boolean isSorted(List<Integer> list) {
-        if (list.isEmpty() || list.size() == 1) return true;
-        for (int i = 0; i < list.size() - 1; i++) {
-            if (list.get(i) > list.get(i + 1)) return false;
-        }
-        return true;
+  private boolean isSorted(List<Integer> list) {
+    if (list.isEmpty() || list.size() == 1) return true;
+    for (int i = 0; i < list.size() - 1; i++) {
+      if (list.get(i) > list.get(i + 1)) return false;
     }
+    return true;
+  }
 
 }

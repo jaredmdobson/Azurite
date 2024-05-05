@@ -1,7 +1,8 @@
 package util.safety;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Juyas
@@ -10,25 +11,27 @@ import org.junit.Test;
  */
 public class PreconditionsTest {
 
-    @Test
-    public void nonNull() {
-        String object = "Any String, test";
-        Assert.assertEquals(object, Preconditions.nonNull(object));
-    }
+  @Test
+  public void nonNull() {
+    String object = "Any String, test";
+    Assertions.assertEquals(object, Preconditions.nonNull(object));
+  }
 
-    @Test(expected = NullPointerException.class)
-    public void isNull() {
-        Preconditions.nonNull(null);
-    }
+  @Test
+  public void isNull() {
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      Preconditions.nonNull(null);
+    });
+  }
 
-    @Test
-    public void isNull2() {
-        String name = "obj";
-        try {
-            Preconditions.nonNull(name, null);
-        } catch (NullPointerException e) {
-            Assert.assertEquals(name + " is null", e.getMessage());
-        }
+  @Test
+  public void isNull2() {
+    String name = "obj";
+    try {
+      Preconditions.nonNull(name, null);
+    } catch (NullPointerException e) {
+      Assertions.assertEquals(name + " is null", e.getMessage());
     }
+  }
 
 }
