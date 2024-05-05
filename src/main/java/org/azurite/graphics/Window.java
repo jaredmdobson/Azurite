@@ -57,7 +57,7 @@ public class Window {
                 boolean recalculateProjectionOnResize) {
     instance = this;
 
-    Log.debug("construct window instance (" + ptitle + ", " + pwidth + ", " + pheight + ", " + minSceneLighting
+    Log.logger.debug("construct window instance (" + ptitle + ", " + pwidth + ", " + pheight + ", " + minSceneLighting
         + ", recalc: " + recalculateProjectionOnResize + ", fullscreen: " + fullscreen + ")");
     this.videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
     width = pwidth;
@@ -87,7 +87,7 @@ public class Window {
       initWindow(width, height, title, 0);
     else
       initWindow(width, height, title, glfwGetPrimaryMonitor());
-    Log.info("window creation successful");
+    Log.logger.info("window creation successful");
   }
 
   /**
@@ -105,12 +105,12 @@ public class Window {
   public Window(String ptitle, float minSceneLighting, boolean recalculateProjectionOnResize) {
     instance = this;
 
-    Log.debug("construct window instance (" + ptitle + ", " + minSceneLighting + ", "
+    Log.logger.debug("construct window instance (" + ptitle + ", " + minSceneLighting + ", "
         + recalculateProjectionOnResize + ")");
     videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
     width = videoMode.width();
     height = videoMode.height();
-    Log.debug("video mode " + width + "/" + height);
+    Log.logger.debug("video mode " + width + "/" + height);
     title = ptitle;
     this.recalculateProjectionOnResize = recalculateProjectionOnResize;
 
@@ -133,7 +133,7 @@ public class Window {
     glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 
     initWindow(width, height, title, glfwGetPrimaryMonitor());
-    Log.info("window creation successful");
+    Log.logger.info("window creation successful");
   }
 
   /**
@@ -205,15 +205,15 @@ public class Window {
    */
   private void initWindow(int width, int height, String title, long monitor) {
     // Create window
-    Log.info("creating window");
+    Log.logger.info("creating window");
     glfwWindow = glfwCreateWindow(width, height, title, monitor, 0);
 
     if (glfwWindow == 0) {
-      Log.fatal("failed to create the window");
+      Log.logger.error("failed to create the window");
       throw new IllegalStateException("[FATAL] Failed to create window.");
     }
 
-    Log.info("setting up glfw");
+    Log.logger.info("setting up glfw");
     // Make the OpenGL context current
     glfwMakeContextCurrent(glfwWindow);
 
@@ -224,7 +224,7 @@ public class Window {
     int xpos = (videoMode.width() - width) / 2;
     int ypos = (videoMode.height() - height) / 2;
     glfwSetWindowPos(glfwWindow, xpos, ypos);
-    Log.debug("window centered at " + xpos + "/" + ypos);
+    Log.logger.debug("window centered at " + xpos + "/" + ypos);
     GL.createCapabilities();
 
     // Set up callback
@@ -243,7 +243,7 @@ public class Window {
 
     });
 
-    Log.debug("setting up input callbacks");
+    Log.logger.debug("setting up input callbacks");
     Mouse.setupCallbacks();
     Keyboard.setupCallbacks();
 
@@ -274,7 +274,7 @@ public class Window {
    * Main game loop: rendering, frametime calculation, event polling and cleanup.
    */
   public void showWindow() {
-    Log.info("starting window");
+    Log.logger.info("starting window");
     glfwShowWindow(glfwWindow);
 
     glEnable(GL_BLEND);
@@ -283,10 +283,10 @@ public class Window {
     double frameBeginTime = glfwGetTime();
     double frameEndTime = glfwGetTime();
 
-    Log.info("enabling scene");
+    Log.logger.info("enabling scene");
     sceneManager.enable();
 
-    Log.info("starting game loop");
+    Log.logger.info("starting game loop");
     while (!glfwWindowShouldClose(glfwWindow)) {
       frameEndTime = glfwGetTime();
       Engine.updateDeltaTime((float) (frameEndTime - frameBeginTime));
@@ -311,7 +311,7 @@ public class Window {
       frameEndTime = glfwGetTime();
     }
 
-    Log.debug("shutting down");
+    Log.logger.debug("shutting down");
 
     currentScene().clean();
     // Delete all framebuffers
@@ -322,7 +322,7 @@ public class Window {
     glfwTerminate();
     glfwSetErrorCallback(null).free();
 
-    Log.info("window closed");
+    Log.logger.info("window closed");
     // stopping engine and all threads listening for the engine to run
     Engine.getInstance().windowStopped();
 
@@ -346,7 +346,7 @@ public class Window {
    * Set the window icon.
    */
   public void setIcon(String path) {
-    Texture icon = new Texture(path);
+    Texture icon = new Texture(path, true);
     GLFWImage image = GLFWImage.malloc();
     GLFWImage.Buffer buffer = GLFWImage.malloc(1);
     ByteBuffer iconBuffer = icon.loadImageInByteBuffer(path);

@@ -12,7 +12,6 @@ import org.azurite.scene.Scene;
 import org.azurite.tiles.Tilesystem;
 import org.azurite.util.Assets;
 import org.azurite.util.Engine;
-import org.azurite.util.Log;
 import org.azurite.util.MathUtils;
 import org.joml.Vector2f;
 
@@ -34,10 +33,9 @@ public class TopDownDemo extends Scene {
   boolean flip = true;
 
   public static void main(String[] args) {
-    Log.setLogLevel(Log.ALL);
     Engine.init(1280, 720, "Azurite Engine Demo 1", 0.01f, true);
     Engine.scenes().switchScene(new TopDownDemo());
-    Engine.window().setIcon("src/assets/images/icon.png");
+    //Engine.window().setIcon("images/icon.png");
     Engine.showWindow();
   }
 
@@ -45,10 +43,10 @@ public class TopDownDemo extends Scene {
     camera = new Camera();
     setDefaultBackground(0);
 
-    a = new Spritesheet(Assets.getTexture("src/assets/images/tileset.png"), 16, 16, 256, 0);
-    b = new Spritesheet(Assets.getTexture("src/assets/images/walls.png"), 16, 16, 256, 0);
+    a = new Spritesheet(Assets.getTexture("images/tileset.png", true), 16, 16, 256, 0);
+    b = new Spritesheet(Assets.getTexture("images/walls.png", true), 16, 16, 256, 0);
 
-    t = new Tilesystem("src/assets/tiles/demoSceneMap.tmx", 200, 200);
+    t = new Tilesystem("tiles/demoSceneMap.tmx", 200, 200, true);
 
     trRes = new GameObject("", new Vector2f(0, 0), -20); //scale 100 for no image remove
 

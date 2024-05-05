@@ -75,7 +75,7 @@ public class TextRenderer extends Renderer {
    */
   @Override
   protected Shader createShader() {
-    return Assets.getShader("src/assets/shaders/text.glsl");
+    return Assets.getShader("shaders/text.glsl", true);
   }
 
   /**

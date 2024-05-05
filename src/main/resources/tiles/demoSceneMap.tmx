@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.8" tiledversion="1.8.5" orientation="orthogonal" renderorder="right-down" width="31" height="15" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
- <tileset firstgid="1" source="../../../../Azurite-main/src/assets/tiles/AzuriteDemoScene.tsx"/>
- <tileset firstgid="257" source="../../../../Azurite-main/src/assets/tiles/demoSceneWalls.tsx"/>
+ <tileset firstgid="1" source="AzuriteDemoScene.tsx"/>
+ <tileset firstgid="257" source="demoSceneWalls.tsx"/>
  <layer id="1" name="Tile Layer 1" width="31" height="15">
   <data encoding="csv">
 257,55,2,52,1,55,3,49,2,55,1,52,3,55,2,52,1,55,3,52,2,55,1,52,3,55,2,52,1,55,259,

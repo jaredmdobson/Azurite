@@ -80,7 +80,7 @@ public class RenderableElement extends Element {
    * @param path to the image (ie. "src/assets/images/pepper.png")
    */
   public RenderableElement(String path, Frame frame) {
-    this.sprite = new Sprite(Assets.getTexture(path));
+    this.sprite = new Sprite(Assets.getTexture(path, true));
     this.color = WHITE.toNormalizedVec4f();
     this.defaultColor = this.color;
     this.frame = frame;

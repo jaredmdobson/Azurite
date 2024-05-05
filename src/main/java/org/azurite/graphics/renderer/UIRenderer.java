@@ -33,7 +33,7 @@ public class UIRenderer extends Renderer {
    */
   @Override
   protected Shader createShader() {
-    return Assets.getShader("src/assets/shaders/ui.glsl");
+    return Assets.getShader("shaders/ui.glsl", true);
   }
 
   /**
@@ -78,7 +78,7 @@ public class UIRenderer extends Renderer {
       Vector2f scale = re.getRenderFrame().getScale();
 
       if (re.getParent() != null) {
-        Log.info("PARENT");
+        Log.logger.info("PARENT");
         pos.add(re.getParent().getX(), re.getParent().getY());
       }
 

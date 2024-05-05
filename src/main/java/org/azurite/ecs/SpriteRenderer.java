@@ -78,7 +78,7 @@ public class SpriteRenderer extends Component {
    */
   public SpriteRenderer(String path, Vector2f size) {
     super(ComponentOrder.DRAW);
-    this.sprite = new Sprite(Assets.getTexture(path));
+    this.sprite = new Sprite(Assets.getTexture(path, true));
     this.color = WHITE.toNormalizedVec4f();
     this.isDirty = true;
     this.size = size;

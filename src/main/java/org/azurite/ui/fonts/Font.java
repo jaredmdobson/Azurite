@@ -122,7 +122,7 @@ public class Font {
       java.awt.Font fontRaw = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, new File(path));
       f = fontRaw.deriveFont(size);
     } catch (Exception e) {
-      Log.warn("could not load font " + path + ", using default monospaced font.", 1);
+      Log.logger.warn("could not load font " + path + ", using default monospaced font.", 1);
       e.printStackTrace();
     }
 

@@ -44,7 +44,7 @@ public class LightmapRenderer extends Renderer {
    */
   @Override
   protected Shader createShader() {
-    return Assets.getShader("src/assets/shaders/lightmap.glsl");
+    return Assets.getShader("shaders/lightmap.glsl", true);
   }
 
   /**

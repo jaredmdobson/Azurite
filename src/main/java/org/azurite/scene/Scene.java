@@ -114,7 +114,7 @@ public abstract class Scene {
    */
   public void activate() {
     this.active = true;
-    Log.debug("org/azurite/scene " + sceneId + " activated");
+    Log.logger.debug("org/azurite/scene " + sceneId + " activated");
   }
 
   /**
@@ -124,7 +124,7 @@ public abstract class Scene {
    */
   public void deactivate() {
     this.active = false;
-    Log.debug("org/azurite/scene " + sceneId + " deactivated");
+    Log.logger.debug("org/azurite/scene " + sceneId + " deactivated");
   }
 
   /**

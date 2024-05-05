@@ -67,7 +67,7 @@ public final class Engine {
 
       Preconditions.nonNull("window", window()).showWindow();
     } catch (Exception e) {
-      Log.crash(e);
+      Log.logger.error("Unable to show window!", e);
       e.printStackTrace();
       System.exit(-1);
     }
@@ -80,7 +80,7 @@ public final class Engine {
   // Internal method called before any init
   private static void preInit() {
 
-    Log.debug("pre init of engine called");
+    Log.logger.debug("pre init of engine called");
 
     System.setProperty("java.awt.headless", "true");
 
@@ -90,35 +90,13 @@ public final class Engine {
     GLFWErrorCallback.createPrint(System.err).set();
 
     if (!glfwInit()) {
-      Log.fatal("failed to initialoze GLFW");
+      Log.logger.error("failed to initialoze GLFW");
       throw new IllegalStateException("[FATAL] Failed to initialize GLFW.");
     }
 
     AudioMaster.get();
 
-    Log.info("engine pre init complete");
-  }
-
-  /**
-   * Enables a parallel thread saving the logging history every
-   * {@link LoggingThread#CYCLE} seconds
-   * to a file named after the calling datetime of this method into the specified
-   * folder.
-   * Everytime the instances shuts down ({@link Engine#isRunning()} is false), the
-   * file is closed and won't be touched again.
-   *
-   * @param folderPath the path of the folder to save the log files to
-   * @param logLevel   {@link Log#FATAL_ONLY}, {@link Log#WARNINGS},
-   *                   {@link Log#NO_DEBUG}, {@link Log#ALL}
-   */
-  public static void enableLogFiles(File folderPath, int logLevel) {
-    try {
-      Log.startLogging(folderPath, logLevel);
-      Log.info("log file record started");
-    } catch (IOException e) {
-      Log.fatal("There has been an error while starting to log", 1);
-      e.printStackTrace();
-    }
+    Log.logger.info("engine pre init complete");
   }
 
   /**

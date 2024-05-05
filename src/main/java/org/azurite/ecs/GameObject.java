@@ -68,7 +68,7 @@ public class GameObject {
   public GameObject(String name, List<Component> componentList, Vector2f position, int zIndex) {
     this.name = name;
     if (this.name == null)
-      Log.warn("GameObject with a name that is null created", 1);
+      Log.logger.warn("GameObject with a name that is null created", 1);
     this.components = new OrderPreservingList<>(componentList);
     this.position[0] = position.x;
     this.position[1] = position.y;
@@ -89,7 +89,7 @@ public class GameObject {
   public GameObject(Scene scene, String name, Vector2f position, int zIndex) {
     this.name = name;
     if (this.name == null)
-      Log.warn("GameObject with a name that is null created", 1);
+      Log.logger.warn("GameObject with a name that is null created", 1);
     this.components = new OrderPreservingList<Component>(new LinkedList<>());
     this.position[0] = position.x;
     this.position[1] = position.y;
@@ -202,7 +202,7 @@ public class GameObject {
         try {
           return componentClass.cast(c);
         } catch (ClassCastException e) {
-          Log.fatal("failed to cast component to " + componentClass.getName());
+          Log.logger.error("failed to cast component to " + componentClass.getName());
           e.printStackTrace();
         }
       }
@@ -225,7 +225,7 @@ public class GameObject {
           T cast = componentClass.cast(c);
           comps.add(cast);
         } catch (ClassCastException e) {
-          Log.fatal("failed to cast component to " + componentClass.getName());
+          Log.logger.error("failed to cast component to " + componentClass.getName());
           e.printStackTrace();
         }
       }

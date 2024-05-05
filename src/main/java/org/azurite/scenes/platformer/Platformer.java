@@ -30,7 +30,6 @@ public class Platformer extends Scene {
   boolean flip = true;
 
   public static void main(String[] args) {
-    Log.setLogLevel(Log.WARNINGS);
     Engine.init(1920, 1080, "Azurite Platformer Demo", 1f, true);
     Engine.scenes().switchScene(new Platformer());
     // Engine.window().setIcon("src/assets/images/icon.png");
@@ -41,10 +40,10 @@ public class Platformer extends Scene {
     camera = new Camera();
     setDefaultBackground(new Color(51, 201, 235));
 
-    a = new Spritesheet(Assets.getTexture("src/assets/images/tileset.png"), 16, 16, 256, 0);
-    b = new Spritesheet(Assets.getTexture("src/assets/images/walls.png"), 16, 16, 256, 0);
+    a = new Spritesheet(Assets.getTexture("images/tileset.png", true), 16, 16, 256, 0);
+    b = new Spritesheet(Assets.getTexture("images/walls.png", true), 16, 16, 256, 0);
 
-    t = new Tilesystem("src/assets/tiles/kenney_tilemap.tmx", 100, 100);
+    t = new Tilesystem("tiles/demoSceneMap.tmx", 100, 100, true);
 
     trRes = new GameObject("", new Vector2f(0, 0), -20); //scale 100 for no image remove
 

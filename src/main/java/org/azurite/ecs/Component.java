@@ -24,7 +24,7 @@ public abstract class Component implements Comparable<Component> {
   public Component(ComponentOrder order) {
     this.order = order == null ? ComponentOrder.POST_DRAW : order;
     if (order == null)
-      Log.warn("Component no ComponentOrder created", 1);
+      Log.logger.warn("Component no ComponentOrder created", 1);
   }
 
   public Component() {

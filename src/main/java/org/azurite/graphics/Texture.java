@@ -1,5 +1,7 @@
 package org.azurite.graphics;
 
+import org.azurite.util.Assets;
+import org.azurite.util.DataConverter;
 import org.azurite.util.Log;
 import org.azurite.util.specs.TextureSpec;
 import org.lwjgl.BufferUtils;
@@ -9,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -30,7 +33,7 @@ public class Texture {
    * If the instance is just a wrapper around an id (by using Texture.wrap()),
    * this will be set to "==== Wrapper ===="
    */
-  private String filepath;
+  private String filePath;
 
   /**
    * The id of the texture
@@ -51,69 +54,35 @@ public class Texture {
     this.textureID = id;
     this.width = -1;
     this.height = -1;
-    filepath = "==== Wrapper ====";
+    filePath = "==== Wrapper ====";
   }
 
   public Texture() {
     this.textureID = glGenTextures();
   }
 
-  /**
-   * Load a Texture from a filepath.
-   * Recommended to use Assets.loadTexture instead of calling this function
-   *
-   * @param filepath filepath of the texture
-   */
-  public Texture(String filepath) {
-    this.filepath = filepath;
+  public Texture(String filePath, boolean fromResources) {
+    this.filePath = filePath;
 
-    // generate texture on GPU
-    textureID = glGenTextures();
-    glBindTexture(GL_TEXTURE_2D, textureID);
+    initTexturesOnGpu();
+    if (fromResources) {
+      loadTextureFromResources(filePath);
+      return;
+    }
 
-    // Set texture parameters
-    // tile image in both directions
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    // When stretching the image, pixelate it
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
-    // Also pixelate image when shrinking image
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // Load image using STB
     IntBuffer width = BufferUtils.createIntBuffer(1);
     IntBuffer height = BufferUtils.createIntBuffer(1);
     IntBuffer channels = BufferUtils.createIntBuffer(1);
     stbi_set_flip_vertically_on_load(true);
-    ByteBuffer image = stbi_load(filepath, width, height, channels, 0);
+    ByteBuffer byteBufferOfImage = stbi_load(filePath, width, height, channels, 0);
 
-    if (image != null) {
-      this.width = width.get(0);
-      this.height = height.get(0);
-
-      if (channels.get(0) == 3) {
-        // RGB
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width.get(0), height.get(0), 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-      } else if (channels.get(0) == 4) {
-        // RGBA
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(0), height.get(0), 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-      } else {
-        Log.fatal("Graphics.Texture - Unknown number of channels \"" + channels.get(0) + "\".");
-        assert false : "[ERROR] Graphics.Texture - Unknown number of channels \"" + channels.get(0) + "\".";
-      }
-    } else {
-      Log.fatal("Graphics.Texture - Could not load image \"" + filepath + "\".");
-      assert false : "[ERROR] Graphics.Texture - Could not load image \"" + filepath + "\".";
-    }
-
-    stbi_image_free(image);
+    loadImage(byteBufferOfImage, width, height, channels);
   }
 
   public Texture(int width, int height, TextureSpec spec) {
-    filepath = "==== Created ====";
+    filePath = "==== Created ====";
     textureID = glGenTextures();
     glBindTexture(GL_TEXTURE_2D, textureID);
     glTexImage2D(GL_TEXTURE_2D, 0, spec.format.internalFormat, width, height, 0, spec.format.format, spec.format.datatype, 0);
@@ -123,6 +92,7 @@ public class Texture {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, spec.rFilter.glType);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, spec.sFilter.glType);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, spec.tFilter.glType);
+
   }
 
   /**
@@ -155,7 +125,7 @@ public class Texture {
     try {
       ImageIO.write(image, "PNG", new File(file));
     } catch (IOException e) {
-      Log.fatal("failed to write image to file \"" + file + "\"");
+      Log.logger.error("failed to write image to file \"" + file + "\"");
       e.printStackTrace();
     }
   }
@@ -169,6 +139,67 @@ public class Texture {
   public static Texture wrap(int id) {
     return new Texture(id);
   }
+
+  private void loadTextureFromResources(String filePath) {
+
+    try (MemoryStack stack = MemoryStack.stackPush()) {
+      InputStream inputStream = Assets.getAzuriteLibraryResourceAsStream(filePath);
+      IntBuffer width = BufferUtils.createIntBuffer(1);
+      IntBuffer height = BufferUtils.createIntBuffer(1);
+      IntBuffer channels = BufferUtils.createIntBuffer(1);
+      ByteBuffer inputStreamByteBuffer = DataConverter.loadInputStreamToByteBuffer(inputStream);
+      ByteBuffer byteBufferOfImage = stbi_load_from_memory(inputStreamByteBuffer, width, height, channels, 0);
+
+      loadImage(byteBufferOfImage, width, height, channels);
+
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new RuntimeException("[ERROR] could not open image file at \"" + this.filePath + "\"");
+    }
+  }
+
+  private void loadImage(ByteBuffer byteBufferOfImage, IntBuffer width, IntBuffer height, IntBuffer channels) {
+    if (byteBufferOfImage != null) {
+      this.width = width.get(0);
+      this.height = height.get(0);
+
+      if (channels.get(0) == 3) {
+        // RGB
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width.get(0), height.get(0), 0, GL_RGB, GL_UNSIGNED_BYTE, byteBufferOfImage);
+      } else if (channels.get(0) == 4) {
+        // RGBA
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width.get(0), height.get(0), 0, GL_RGBA, GL_UNSIGNED_BYTE, byteBufferOfImage);
+      } else {
+        Log.logger.error("Graphics.Texture - Unknown number of channels \"" + channels.get(0) + "\".");
+        throw new RuntimeException("[ERROR] Graphics.Texture - Unknown number of channels \"" + channels.get(0) + "\".");
+      }
+    } else {
+      Log.logger.error("Graphics.Texture - Could not load image \"" + filePath + "\".");
+      throw new RuntimeException("[ERROR] Graphics.Texture - Could not load image \"" + filePath + "\".");
+    }
+    stbi_image_free(byteBufferOfImage);
+  }
+
+  private void initTexturesOnGpu() {
+    // generate texture on GPU
+    textureID = glGenTextures();
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Set texture parameters
+    // tile image in both directions
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    // When stretching the image, pixelate it
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    // Also pixelate image when shrinking image
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    stbi_set_flip_vertically_on_load(true);
+  }
+
 
   /**
    * Uploads image data with specified width and height.
@@ -297,13 +328,13 @@ public class Texture {
   }
 
   /**
-   * The filepath from which this texture was loaded.
+   * The filePath from which this texture was loaded.
    * Will return "==== Wrapper ====" if it is just a wrapper around an id.
    *
-   * @return filepath from which the texture was loaded
+   * @return filePath from which the texture was loaded
    */
   public String getFilePath() {
-    return filepath;
+    return filePath;
   }
 
   public void setId(int id) {
@@ -330,7 +361,7 @@ public class Texture {
       stbi_set_flip_vertically_on_load(false);
       image = stbi_load(path, width, height, comp, 4);
       if (image == null) {
-        Log.fatal("failed to load image from \"" + path + "\"");
+        Log.logger.error("failed to load image from \"" + path + "\"");
         throw new RuntimeException("Failed to load image: " + path);
       }
       this.width = width.get();

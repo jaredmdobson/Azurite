@@ -33,7 +33,6 @@ public class UIDemo extends Scene {
   Button button;
 
   public static void main(String[] args) {
-    Log.setLogLevel(Log.ALL);
     Engine.init(900, 600, "Azurite UI Rendering Demo", 1, true);
     Engine.scenes().switchScene(new UIDemo());
     Engine.showWindow();
@@ -45,9 +44,9 @@ public class UIDemo extends Scene {
     setDefaultBackground(Color.WHITE);
 
     background = new GameObject(new Vector2f(0, 0));
-    background.addComponent(new SpriteRenderer("src/assets/images/paper background.png", new Vector2f(Window.getWidth(), Window.getHeight())));
+    background.addComponent(new SpriteRenderer("images/paper background.png", new Vector2f(Window.getWidth(), Window.getHeight())));
     int size = 36;
-    uiSprites = new Spritesheet(new Texture("src/assets/images/radio-checks.png"), size, size, 12, 0);
+    uiSprites = new Spritesheet(new Texture("images/radio-checks.png", true), size, size, 12, 0);
 
 
 //        description = new Text("Hello World!", 200, 200);
@@ -94,7 +93,7 @@ public class UIDemo extends Scene {
     addUIElement(button);
 
     button.getEventHandler().registerListener(EventHandler.Event.MOUSE_CLICK, e -> {
-      Log.p("CLICKED! \n" + e.getElement().toString());
+      Log.logger.info("CLICKED! \n" + e.getElement().toString());
     });
   }
 
@@ -105,12 +104,12 @@ public class UIDemo extends Scene {
     for (String i : radios.getSelected()) {
       s += i + ", ";
     }
-    //Log.p(s);
+    //Log.logger.p(s);
 
     for (String i : checks.getSelected()) {
       s += i + ", ";
     }
-    //Log.p(s);
+    //Log.logger.p(s);
 
   }
 }

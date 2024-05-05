@@ -34,7 +34,7 @@ public class AudioMaster {
       try {
         init();
       } catch (Exception e) {
-        Log.fatal("could not initialize AudioMaster.");
+        Log.logger.error("could not initialize AudioMaster.");
         e.printStackTrace();
       }
       instance = new AudioMaster();
@@ -72,7 +72,7 @@ public class AudioMaster {
     long newContext = ALC10.alcCreateContext(device, contextAttribList);
 
     if (!ALC10.alcMakeContextCurrent(newContext)) {
-      Log.fatal("failed to make context current");
+      Log.logger.error("failed to make context current");
       throw new Exception("Failed to make context current");
     }
 
@@ -83,7 +83,7 @@ public class AudioMaster {
   public static void alGetError() {
     int err = AL10.alGetError();
     if (err != 0) {
-      Log.fatal("AL error received: " + alGetString(err));
+      Log.logger.error("AL error received: " + alGetString(err));
       throw new RuntimeException();
     }
   }

@@ -251,7 +251,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
   public int getVertexCount() {
     // Safety check
     if (dataOffset % vertexCount != 0)
-      Log.warn("a renderer seems to not have the correct amount of data!!!", 2);
+      Log.logger.warn("a renderer seems to not have the correct amount of data!!!", 2);
     return (dataOffset * primitive.elementCount) / (vertexCount * primitive.vertexCount);
   }
 

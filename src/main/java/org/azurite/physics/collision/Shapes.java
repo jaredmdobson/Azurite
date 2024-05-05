@@ -60,7 +60,7 @@ public class Shapes {
    */
   public static ConvexPolygon convexPolygon(float... coordPairs) {
     if (coordPairs.length % 2 == 1 || coordPairs.length == 0) {
-      Log.warn("polygon with incorrect input data not created " + Arrays.toString(coordPairs), 1);
+      Log.logger.warn("polygon with incorrect input data not created " + Arrays.toString(coordPairs), 1);
       return null;
     }
     Vector2f[] coords = new Vector2f[coordPairs.length / 2];

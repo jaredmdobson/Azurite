@@ -30,7 +30,7 @@ public class DefaultRenderer extends Renderer {
    */
   @Override
   protected Shader createShader() {
-    return Assets.getShader("src/assets/shaders/default.glsl");
+    return Assets.getShader("shaders/default.glsl", true);
   }
 
   /**

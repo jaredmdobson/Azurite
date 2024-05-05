@@ -31,7 +31,7 @@ public class Tilesystem {
   GameObject[][] gameObjects;
   int tileWidth, tileHeight;
 
-  public Tilesystem(String tmxFile, int width, int height) {
+  public Tilesystem(String tmxFile, int width, int height, boolean fromResources) {
 
     // Find CWD path
     Path tilesetPath = Paths.get(tmxFile);
@@ -41,7 +41,7 @@ public class Tilesystem {
     this.tileHeight = height;
 
     // Extract XML data
-    XMLElement root = XML.parse(Assets.getDataFile(tmxFile).array());
+    XMLElement root = XML.parse(Assets.getDataFile(tmxFile, fromResources).array());
 
     // Determine number of tiles on X and Y axis'
     int xTiles = Integer.parseInt(root.getAttributes().get("width"));
@@ -52,8 +52,7 @@ public class Tilesystem {
       if (i.getTag().equals("tileset")) {
         tilesets.add(new Tileset(
             Integer.parseInt(i.getAttributes().get("firstgid")),
-            new File(directory, i.getAttributes().get("source")).toPath()
-        ));
+            new File(directory, i.getAttributes().get("source")).toPath(), fromResources));
       }
 
       // Determine number of layers and save their data
@@ -149,12 +148,12 @@ class Tileset {
   protected int firstgid;
   protected Path source;
 
-  Tileset(int firstgid, Path source) {
+  Tileset(int firstgid, Path source, boolean fromResources) {
     this.firstgid = firstgid;
     this.source = source;
 
     // Parse the .tsx file to extract the spritesheet data and texture path
-    XMLElement tsRoot = XML.parse(Assets.getDataFile(this.source.toString()).array());
+    XMLElement tsRoot = XML.parse(Assets.getDataFile(this.source.toString(), fromResources).array());
 
     int tileWidth = 0;
     int tileHeight = 0;
@@ -165,15 +164,15 @@ class Tileset {
       tileWidth = Integer.parseInt(tsRoot.getAttributes().get("tilewidth"));
       tileHeight = Integer.parseInt(tsRoot.getAttributes().get("tileheight"));
       tileCount = Integer.parseInt(tsRoot.getAttributes().get("tilecount"));
-      spacing = Integer.parseInt(tsRoot.getAttributes().get("spacing"));
+      spacing = tsRoot.getAttributes().get("spacing") != null ? Integer.parseInt(tsRoot.getAttributes().get("spacing")) : 0;
     } catch (Exception e) {
-      Log.warn("Tileset " + source + " is missing some attributes. Using default values.");
+      Log.logger.warn("Tileset " + source + " is missing some attributes. Using default values.");
       e.printStackTrace();
     }
 
     String spriteSheetPath = new File(this.source.getParent().toString(), tsRoot.getChildren().get(0).getAttributes().get("source")).toString();
 
-    this.spritesheet = new Spritesheet(new Texture(spriteSheetPath), tileWidth, tileHeight, tileCount, spacing);
+    this.spritesheet = new Spritesheet(new Texture(spriteSheetPath, true), tileWidth, tileHeight, tileCount, spacing);
   }
 }
 

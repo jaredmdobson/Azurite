@@ -8,7 +8,6 @@ import org.azurite.scene.Scene;
 import org.azurite.ui.Text;
 import org.azurite.ui.fonts.Font;
 import org.azurite.util.Engine;
-import org.azurite.util.Log;
 import org.joml.Vector2f;
 
 import static org.azurite.graphics.Graphics.setDefaultBackground;
@@ -23,7 +22,6 @@ public class TextRenderingDemo extends Scene {
   Text rainbowText;
 
   public static void main(String[] args) {
-    Log.setLogLevel(Log.ALL);
     Engine.init(900, 600, "Azurite Font Rendering Demo", 0, true);
     Engine.scenes().switchScene(new TextRenderingDemo());
     Engine.showWindow();

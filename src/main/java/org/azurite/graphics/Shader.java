@@ -5,6 +5,7 @@ import org.joml.*;
 import org.lwjgl.BufferUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,6 +25,7 @@ public class Shader {
   public static int fragmentID;
 
   // Setup shaders
+  private final HashMap<String, Integer> uniformLocations;
   /**
    * The Shader Program's ID
    */
@@ -43,50 +45,64 @@ public class Shader {
   /**
    * Filepath to the shader file
    */
-  private String filepath;
+  private String filePath;
 
-  private HashMap<String, Integer> uniformLocations;
-
-  /**
-   * Loads the shader file at filepath. The shader file should have both shaders.
-   * Vertex Shader and fragment shader. #type should be used to separate them.
-   */
-  public Shader(String filePath) {
-    this.filepath = filePath;
+  public Shader(String filePath, InputStream inputStream) {
     this.uniformLocations = new HashMap<>();
     try {
-      String source = new String(Files.readAllBytes(Paths.get(filepath)));
-      String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
-
-      // Find first pattern after #type
-      int index = source.indexOf("#type") + 6;
-      int endOfLine = source.indexOf("\n", index); // \r\n on windows
-      String firstPattern = source.substring(index, endOfLine).trim();
-
-      // find the second pattern after #type
-      index = source.indexOf("#type", endOfLine) + 6;
-      endOfLine = source.indexOf("\n", index);
-      String secondPattern = source.substring(index, endOfLine).trim();
-
-      if (firstPattern.equals("vertex")) {
-        vertexSource = splitString[1];
-      } else if (firstPattern.equals("fragment")) {
-        fragmentSource = splitString[1];
-      } else {
-        throw new IOException("Unexpected token \"" + firstPattern + "\"");
-      }
-
-      if (secondPattern.equals("vertex")) {
-        vertexSource = splitString[2];
-      } else if (secondPattern.equals("fragment")) {
-        fragmentSource = splitString[2];
-      } else {
-        throw new IOException("Unexpected token \"" + secondPattern + "\"");
-      }
+      String source = new String(inputStream.readAllBytes());
+      initializeShader(source);
 
     } catch (IOException e) {
       e.printStackTrace();
-      assert false : "[ERROR] could not open shader file at \"" + filepath + "\"";
+      assert false : "[ERROR] could not open shader file at \"" + this.filePath + "\"";
+    }
+  }
+
+  /**
+   * Loads the shader file at filePath. The shader file should have both shaders.
+   * Vertex Shader and fragment shader. #type should be used to separate them.
+   */
+  public Shader(String filePath) {
+    this.filePath = filePath;
+    this.uniformLocations = new HashMap<>();
+    try {
+      String source = new String(Files.readAllBytes(Paths.get(this.filePath)));
+      initializeShader(source);
+
+    } catch (IOException e) {
+      e.printStackTrace();
+      assert false : "[ERROR] could not open shader file at \"" + this.filePath + "\"";
+    }
+  }
+
+  private void initializeShader(String source) throws IOException {
+    String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
+
+    // Find first pattern after #type
+    int index = source.indexOf("#type") + 6;
+    int endOfLine = source.indexOf("\n", index); // \r\n on windows
+    String firstPattern = source.substring(index, endOfLine).trim();
+
+    // find the second pattern after #type
+    index = source.indexOf("#type", endOfLine) + 6;
+    endOfLine = source.indexOf("\n", index);
+    String secondPattern = source.substring(index, endOfLine).trim();
+
+    if (firstPattern.equals("vertex")) {
+      vertexSource = splitString[1];
+    } else if (firstPattern.equals("fragment")) {
+      fragmentSource = splitString[1];
+    } else {
+      throw new IOException("Unexpected token \"" + firstPattern + "\"");
+    }
+
+    if (secondPattern.equals("vertex")) {
+      vertexSource = splitString[2];
+    } else if (secondPattern.equals("fragment")) {
+      fragmentSource = splitString[2];
+    } else {
+      throw new IOException("Unexpected token \"" + secondPattern + "\"");
     }
   }
 
@@ -105,8 +121,8 @@ public class Shader {
     int success = glGetShaderi(vertexID, GL_COMPILE_STATUS);
     if (success == GL_FALSE) {
       int length = glGetShaderi(vertexID, GL_INFO_LOG_LENGTH);
-      Log.fatal("vertex shader compilation failed. " + filepath + "\n\t", 2);
-      Log.fatal(glGetShaderInfoLog(vertexID, length), false);
+      Log.logger.error("vertex shader compilation failed. " + filePath + "\n\t", 2);
+      Log.logger.error(glGetShaderInfoLog(vertexID, length), false);
       assert false : "";
     }
 
@@ -120,8 +136,8 @@ public class Shader {
     success = glGetShaderi(fragmentID, GL_COMPILE_STATUS);
     if (success == GL_FALSE) {
       int length = glGetShaderi(fragmentID, GL_INFO_LOG_LENGTH);
-      Log.fatal("fragment shader compilation failed. " + filepath + "\n\t", 2);
-      Log.fatal(glGetShaderInfoLog(fragmentID, length), false);
+      Log.logger.error("fragment shader compilation failed. " + filePath + "\n\t", 2);
+      Log.logger.error(glGetShaderInfoLog(fragmentID, length), false);
       assert false : "";
     }
 
@@ -134,8 +150,8 @@ public class Shader {
     success = glGetProgrami(shaderProgramID, GL_LINK_STATUS);
     if (success == GL_FALSE) {
       int length = glGetProgrami(shaderProgramID, GL_INFO_LOG_LENGTH);
-      Log.fatal("shader linking failed. " + filepath + "\n\t", 2);
-      Log.fatal(glGetProgramInfoLog(shaderProgramID, length), false);
+      Log.logger.error("shader linking failed. " + filePath + "\n\t", 2);
+      Log.logger.error(glGetProgramInfoLog(shaderProgramID, length), false);
       assert false : "";
     }
   }
