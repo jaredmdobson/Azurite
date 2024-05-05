@@ -75,7 +75,7 @@ public class UIDemo extends Scene {
 
     checks = new CheckBoxGroup(CheckBox.Type.MULTI_SELECT, checkOptions, uiSprites.getSprite(3), uiSprites.getSprite(9), new Vector2f(30, 170));
 
-    button = new Button("Button", "src/assets/images/Button-282-53.png", Color.WHITE, new Frame(30, 300, 282, 53));
+    button = new Button("Button", "images/Button-282-53.png", Color.WHITE, new Frame(30, 300, 282, 53));
     button.tintColor = new Color(200, 200, 200, 255).toNormalizedVec4f();
 
     button.getEventHandler().registerListener(EventHandler.Event.MOUSE_CLICK, new Consumer<EventHandler>() {

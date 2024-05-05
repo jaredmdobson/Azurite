@@ -31,7 +31,7 @@ import java.util.List;
  *         // ...
  *         player = new GameObject("Player", new Vector2f(600, 600), 2);
  *         player.addComponent(new PointLight(new Color(250, 255, 181), 30));
- *         player.addComponent(new SpriteRenderer(Assets.getTexture("src/assets/images/player.png"), new Vector2f(64, 64)));
+ *         player.addComponent(new SpriteRenderer(Assets.getTexture("images/player.png"), new Vector2f(64, 64)));
  *
  *     }
  *

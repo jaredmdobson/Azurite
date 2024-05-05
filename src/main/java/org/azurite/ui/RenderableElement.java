@@ -77,7 +77,7 @@ public class RenderableElement extends Element {
   /**
    * Create a spriteRenderer using an image from the fileSystem.
    *
-   * @param path to the image (ie. "src/assets/images/pepper.png")
+   * @param path to the image (ie. "images/pepper.png")
    */
   public RenderableElement(String path, Frame frame) {
     this.sprite = new Sprite(Assets.getTexture(path, true));

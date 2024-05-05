@@ -31,11 +31,11 @@ public class AudioDemo extends Scene {
     setDefaultBackground(0);
 
     barFoo = new GameObject(new Vector2f(0, 0));
-    barFoo.addComponent(new AudioSource(Assets.getAudioBuffer("src/assets/sounds/lines_of_code.wav")));
+    barFoo.addComponent(new AudioSource(Assets.getAudioBuffer("sounds/lines_of_code.wav")));
     //barFoo.getComponent(AudioSource.class).play(0, true);
 
     barFoo1 = new GameObject(new Vector2f(0, 0));
-    barFoo1.addComponent(new AudioSource(Assets.getAudioBuffer("src/assets/sounds/hit.wav")));
+    barFoo1.addComponent(new AudioSource(Assets.getAudioBuffer("sounds/hit.wav")));
   }
 
   public void update() {

@@ -32,8 +32,8 @@ public class TextRenderingDemo extends Scene {
     camera = new Camera();
     setDefaultBackground(Color.WHITE);
 
-    maghrib = new Font("src/assets/fonts/Maghrib-MVZpx.ttf", 100, true);
-    openSans = new Font("src/assets/fonts/OpenSans-Regular.ttf", 20, true);
+    maghrib = new Font("fonts/Maghrib-MVZpx.ttf", 100, true);
+    openSans = new Font("fonts/OpenSans-Regular.ttf", 20, true);
 
     float halfWindowWidth = Window.getWidth() / 2.0f;
     titleText = new Text("Azurite text rendering demo", maghrib, Color.BLACK, halfWindowWidth, 5, 1, true, true);

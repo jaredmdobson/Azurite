@@ -32,7 +32,7 @@ public class Platformer extends Scene {
   public static void main(String[] args) {
     Engine.init(1920, 1080, "Azurite Platformer Demo", 1f, true);
     Engine.scenes().switchScene(new Platformer());
-    // Engine.window().setIcon("src/assets/images/icon.png");
+    // Engine.window().setIcon("images/icon.png");
     Engine.showWindow();
   }
 

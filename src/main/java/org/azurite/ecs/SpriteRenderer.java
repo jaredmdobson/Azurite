@@ -74,7 +74,7 @@ public class SpriteRenderer extends Component {
   /**
    * Create a spriteRenderer using an image from the fileSystem.
    *
-   * @param path to the image (ie. "src/assets/images/pepper.png")
+   * @param path to the image (ie. "images/pepper.png")
    */
   public SpriteRenderer(String path, Vector2f size) {
     super(ComponentOrder.DRAW);

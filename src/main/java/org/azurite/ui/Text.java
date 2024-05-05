@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
  *
  *     public void awake() {
  *         // ...
- *         font = new Font("src/assets/fonts/OpenSans-Regular.ttf", 24, true);
+ *         font = new Font("fonts/OpenSans-Regular.ttf", 24, true);
  *         text = new Text("Hello, World!", font, Color.BLACK, 100, 100);
  *     }
  *
